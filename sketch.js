@@ -9,6 +9,11 @@ var obstacle1,obstacle2,obstacle3,obstacle4,obstacle5,obstacle6,obstacle7,obstac
 var obstacle13,obstacle14,obstacle15;
 var ball1;
 var rand;
+var score;
+var particle;
+var turn;
+var gameState;
+var particle;
 
 function preload()
 {
@@ -44,6 +49,10 @@ function setup() {
 	obstacle14 = new Obstacle(131.75,280,10);
 	obstacle15 = new Obstacle(44.25,280,10);
 	ball1 = new Ball(rand,30,25);
+	score = 0;
+	gameState = "play";
+	particle = createSprite(350,500,700,20);
+	particle.visible = false;
 	
 	
 
@@ -56,6 +65,13 @@ function setup() {
 function draw() {
 	rectMode(CENTER);
 	background("lightgray");
+
+	text("Score: "+score,620,20);
+
+	text("100",250,600);
+	text("100",430,600);
+	text("200",605,600);
+	text("200",75,600);
 	
 	Engine.update(engine);
 
@@ -90,3 +106,38 @@ function keyPressed(){
 	}
 }
 
+function mousePressed(){
+	if(gameState!=="end"){
+		if(body1.body.position.x < 350){
+			if(body1.body.position.x > 175){
+				score = score + 100;
+			}
+			if(body1.body.position.x < 175){
+				score = score + 200;	
+			}
+		}
+		if(body1.body.position.x > 350){
+			if(body1.body.position.x > 525){
+				score = score + 200;
+			}
+			if(body1.body.position.x < 525){
+				score = score + 100;
+			}
+		}
+
+	}
+}
+
+function reset(){
+	if(keyCode === 82){
+		ball1.body.x = rand;
+		ball1.body.y = 30;
+		Matter.Body.setStatic(ball1.body,true);
+	}
+}
+
+function receivePoints(){
+	if(ball1.body.isTouching(ground1.body)){
+		gameState = "end";
+	}
+}
